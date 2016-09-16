@@ -8,14 +8,6 @@ xhr.open("GET", "http://reqres.in/api/users", true);
 xhr.send();
 
 
-// // Create a post
-// var xhr = new XMLHttpRequest();
-// xhr.addEventListener( "load", function(){
-//     console.log( this.responseText );
-// });
-// xhr.open("POST", "http://reqres.in/api/posts", true);
-// xhr.send("title=Foo&body=Bar&userId=1");
-
 var $ = (function(){
 
 
@@ -24,17 +16,27 @@ var $ = (function(){
 
     var xhr = new XMLHttpRequest();
 
+    var async = data.async || true; 
+    xhr.open(data.type, data.url, async);
+
     if (data.success) {
-      xhr.addEventListener()
+      xhr.onload = function() {
+      };
     }
 
     if (data.error) {
-      xhr.addEventListener()
+      xhr.onerror = function() {
+
+      };
+    }
+    
+    if (data.complete) {
+      xhr.onsuccess = function() {
+
+      }
     }
 
-    if (data.complete) {
-      xhr.addEventListener();
-    }
+    xhr.send("" + data.data);
   }
 
   return {
@@ -45,3 +47,11 @@ var $ = (function(){
 
 
 })()
+
+// // Create a post
+// var xhr = new XMLHttpRequest();
+// xhr.addEventListener( "load", function(){
+//     console.log( this.responseText );
+// });
+// xhr.open("POST", "http://reqres.in/api/posts", true);
+// xhr.send("title=Foo&body=Bar&userId=1");
