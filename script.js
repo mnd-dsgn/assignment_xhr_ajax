@@ -3,13 +3,20 @@ var xhr = new XMLHttpRequest();
 xhr.addEventListener( "load", function(){
     // console.log(this);
     // console.log( this.responseText );
-});
+  });
 xhr.open("GET", "http://reqres.in/api/users", true);
 xhr.send();
 
 
+
 var $ = (function(){
 
+  function jsonToQueryString(json) {
+    return Object.keys(json).map(function(key) {
+      return encodeURIComponent(key) + '=' +
+      encodeURIComponent(json[key]);
+    }).join('&');
+  };
 
 
   var ajax = function(data) {
@@ -19,24 +26,31 @@ var $ = (function(){
     var async = data.async || true; 
     xhr.open(data.type, data.url, async);
 
+    // if (data.headers) {
+    //   var headers = JSON.parse(data.headers);
+    //   xhr.setRequestHeader(headers);
+    // }
+
+    
     if (data.success) {
       xhr.onload = function() {
-      };
-    }
-
-    if (data.error) {
-      xhr.onerror = function() {
-
-      };
-    }
-    
-    if (data.complete) {
-      xhr.onsuccess = function() {
-
+        if(xhr.status >= 200 && xhr.status < 400) {
+          data.success(xhr.responseText);
+        } // may have to parse from JSON
       }
     }
 
-    xhr.send("" + data.data);
+    if (data.error) {
+      xhr.onerror = data.error;
+    }
+    
+    if (data.complete) {
+      xhr.onsuccess = data.complete;
+    }
+
+    if (data.type === "POST") {
+      xhr.send(jsonToQueryString(data.type));
+    }
   }
 
   return {
@@ -47,6 +61,18 @@ var $ = (function(){
 
 
 })()
+
+$.ajax({
+    url: "http://reqres.in/api/users",
+    type: "GET",
+    data: {
+        name: "paul rudd",
+        movies: ["I Love You Man", "Role Models"]
+    },
+    success: function(response){
+        console.log(response);
+    }
+});
 
 // // Create a post
 // var xhr = new XMLHttpRequest();
